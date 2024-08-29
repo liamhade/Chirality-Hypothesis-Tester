@@ -15,7 +15,7 @@ import "./styles.css";
 
 const CHEMICALS = [{name_: "salt", stereo: [1,2,3]}];
 const REACTIONS = [{name_: "heat", stereo: [1,1,1]}];
-const CONNECTIONs = [];
+const CONNECTIONS = [];
 
 export default function App() {
 	const [clickedElement, setClickedElement] = useState(null);
@@ -23,7 +23,8 @@ export default function App() {
 	const [inputType, setInputType] = useState(null);
 
 	const handleClick = (e) => {
-		console.log(e)
+		console.log(e);
+		console.log("e");
 	}
 
 	return (
@@ -31,7 +32,7 @@ export default function App() {
 			<p style={{ position: "absolute", left: "30px", top:"30px" }}>Hello</p>
 
 			{CHEMICALS.map((chemical) => (
-				<Chemical onClick={ handleClick } key={ chemical.name_ } name={ chemical.name_ } />
+				<Chemical onClick={ handleClick } name={ chemical.name_ } />
 			))}	
 
 			{REACTIONS.map((reaction) => (
@@ -166,15 +167,36 @@ class ContextMenu extends React.Component {
 class Chemical extends React.Component {
     constructor (props) {
 		super(props);
-		// this.name = name_;
-        // this.stereo = stereochemistry;
+		this.setSelectedElement = props.setSelectedElement;
+		this.state ={
+			highlighted: false
+		}
     }
 
+	handleIconClick = () => {
+		this.setState({ highlighted: true });
+		this.setSelectedElement()
+	}
+
 	render() {
+		
+
+		const ChemicalIcon = () => {
+			return (
+				<CircleIcon 
+					onClick={ this.handleIconClick }
+					sx={{ 
+						outline: (this.state.highlighted ? "solid rgb(255, 0, 0) 2px": ""), 
+						fontSize: 50,
+					}}
+				/>
+			)
+		}
+
 		return (
 			<Draggable>
 				<div id={ `chemical-id-${this.props.name}` }>
-					<CircleIcon sx={{ fontSize: 50  }} />
+					<ChemicalIcon />
 					<p>{this.props.name}</p>
 				</div>
 			</Draggable>
