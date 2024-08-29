@@ -18,21 +18,16 @@ const REACTIONS = [{name_: "heat", stereo: [1,1,1]}];
 const CONNECTIONS = [];
 
 export default function App() {
-	const [clickedElement, setClickedElement] = useState(null);
+	const [selectedElement, setSelectedElement] = useState(null);
 	const [inputVisible, setInputVisible] = useState(false);
 	const [inputType, setInputType] = useState(null);
-
-	const handleClick = (e) => {
-		console.log(e);
-		console.log("e");
-	}
 
 	return (
 		<div>		
 			<p style={{ position: "absolute", left: "30px", top:"30px" }}>Hello</p>
 
 			{CHEMICALS.map((chemical) => (
-				<Chemical onClick={ handleClick } name={ chemical.name_ } />
+				<Chemical name={ chemical.name_ } setSelectedElement={ setSelectedElement } />
 			))}	
 
 			{REACTIONS.map((reaction) => (
@@ -40,7 +35,7 @@ export default function App() {
 			))}	
 
 			{ inputVisible && <InputBox type={ inputType } setVisible={ setInputVisible } /> }
-			{ !inputVisible && <ContextMenu setClickedElement={ setClickedElement } setInputType={ setInputType } setInputVisible={ setInputVisible }/> }
+			{ !inputVisible && <ContextMenu setInputType={ setInputType } setInputVisible={ setInputVisible } /> }
 		</div>
 	);
 }
@@ -77,7 +72,6 @@ class ContextMenu extends React.Component {
 			yPos: "0px",
 			showMenu: false,	
 		};
-		this.setClickedElement = props.setClickedElement;
 		this.setInputVisible = props.setInputVisible;
 		this.setInputType = props.setInputType
 	}
@@ -173,22 +167,22 @@ class Chemical extends React.Component {
 		}
     }
 
-	handleIconClick = () => {
+	handleIconClick(ref) {
 		this.setState({ highlighted: true });
-		this.setSelectedElement()
+		this.setSelectedElement(ref);
 	}
 
 	render() {
-		
-
 		const ChemicalIcon = () => {
+			const ref = useRef(null); 
 			return (
 				<CircleIcon 
-					onClick={ this.handleIconClick }
+					onClick={ () => (this.handleIconClick(ref)) }
 					sx={{ 
 						outline: (this.state.highlighted ? "solid rgb(255, 0, 0) 2px": ""), 
 						fontSize: 50,
 					}}
+					ref={ ref }
 				/>
 			)
 		}
