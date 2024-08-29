@@ -19,15 +19,14 @@ const CONNECTIONS = [];
 
 export default function App() {
 	const [selectedElement, setSelectedElement] = useState(null);
+	const [connectionMode, setConnectionMode] = useState(false);
 	const [inputVisible, setInputVisible] = useState(false);
 	const [inputType, setInputType] = useState(null);
 
 	return (
 		<div>		
-			<p style={{ position: "absolute", left: "30px", top:"30px" }}>Hello</p>
-
 			{CHEMICALS.map((chemical) => (
-				<Chemical name={ chemical.name_ } setSelectedElement={ setSelectedElement } />
+				<Chemical name={ chemical.name_ } connectionMode={ connectionMode } setSelectedElement={ setSelectedElement } />
 			))}	
 
 			{REACTIONS.map((reaction) => (
@@ -35,7 +34,7 @@ export default function App() {
 			))}	
 
 			{ inputVisible && <InputBox type={ inputType } setVisible={ setInputVisible } /> }
-			{ !inputVisible && <ContextMenu setInputType={ setInputType } setInputVisible={ setInputVisible } /> }
+			{ !inputVisible && <ContextMenu setConnectionMode={ setConnectionMode } setInputType={ setInputType } setInputVisible={ setInputVisible } /> }
 		</div>
 	);
 }
@@ -74,6 +73,7 @@ class ContextMenu extends React.Component {
 		};
 		this.setInputVisible = props.setInputVisible;
 		this.setInputType = props.setInputType
+		this.setConnectionMode = props.setConnectionMode;
 	}
 
 	componentDidMount() {
@@ -122,8 +122,8 @@ class ContextMenu extends React.Component {
 			root.style.outline = "dashed rgb(255, 0, 0) 3px";
 
 			// Wait for the user to click a chemical or reaction
-			// this.setClickedElement = 
-
+			this.setConnectionMode(true);
+			console.log("set connection mode to true");
 
 			// Once they click it, put a red outline around it
 
@@ -162,14 +162,19 @@ class Chemical extends React.Component {
     constructor (props) {
 		super(props);
 		this.setSelectedElement = props.setSelectedElement;
-		this.state ={
+		// this.connection_mode = props.connectionMode;
+		this.state = {
+			connnection_mode: props.connectionMode,
 			highlighted: false
 		}
     }
 
 	handleIconClick(ref) {
-		this.setState({ highlighted: true });
-		this.setSelectedElement(ref);
+		console.log(this.state.connection_mode);
+		if (this.state.connection_mode) {
+			this.setState({ highlighted: true });
+			this.setSelectedElement(ref);
+		}
 	}
 
 	render() {
