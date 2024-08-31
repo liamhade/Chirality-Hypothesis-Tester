@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import Paper from '@mui/material/Paper';
 import MenuList from '@mui/material/MenuList';
 import MenuItem from '@mui/material/MenuItem';
@@ -13,8 +13,11 @@ import Draggable, {DraggableCore} from "react-draggable";
 
 import "./styles.css";
 
-const CHEMICALS = [{name_: "salt", stereo: [1,2,3]}];
-const REACTIONS = [{name_: "heat", stereo: [1,1,1]}];
+const CHEMICALS = [
+	{name_: "salt", stereo: [1,-1,1]},
+	// {name_: "dirt", stereo: [1,1,-1]}
+];
+const REACTIONS = [{name_: "heat", stereo: [-1,1,-1]}];
 const CONNECTIONS = [];
 
 export default function App() {
@@ -23,10 +26,16 @@ export default function App() {
 	const [inputVisible, setInputVisible] = useState(false);
 	const [inputType, setInputType] = useState(null);
 
+	const componentConnector = new ComponentConnector(); 
+
+	const start_ref = useRef(null);
+	const end_ref = useRef(null);
+
+
 	return (
 		<div>		
 			{CHEMICALS.map((chemical) => (
-				<Chemical name={ chemical.name_ } connectionMode={ connectionMode } setSelectedElement={ setSelectedElement } />
+				<Chemical name={ chemical.name_ } componentConnector={ componentConnector } connectionMode={ connectionMode } setSelectedElement={ setSelectedElement } />
 			))}	
 
 			{REACTIONS.map((reaction) => (
@@ -35,6 +44,15 @@ export default function App() {
 
 			{ inputVisible && <InputBox type={ inputType } setVisible={ setInputVisible } /> }
 			{ !inputVisible && <ContextMenu setConnectionMode={ setConnectionMode } setInputType={ setInputType } setInputVisible={ setInputVisible } /> }
+
+
+			<Draggable>
+				<p ref={ start_ref }>start</p>
+			</Draggable>
+			<Draggable>
+				<p ref={ end_ref }>end</p>
+			</Draggable>
+			<Arrow startRef={ start_ref } endRef={ end_ref } />
 		</div>
 	);
 }
@@ -43,19 +61,47 @@ export default function App() {
 // CLASSES
 ///////////
 
-class ConnectComponents {
-	constructor(parent) {
+class ComponentConnector {
+	constructor() {
 		// Both attributes are HTML elements
-		this.parent = parent;
+		this.parent = null;
+		this.child = null;
+
+		// How many times we've already clicked with the
+		// component connector active
+		this.click_num = 0;
+	}
+
+	reset() {
+		this.click_num = 0;
+		this.parent = null;
 		this.child = null;
 	}
 
-	highlightParent() {
-		this.parent.style.outline = "solid rgb(255, 0, 0) 3px";
+	isParentClick() {
+		return (this.click_num == 0);
 	}
 
-	setChild(child) {
-		this.child = child;
+	handleClick(ref) {
+		if (this.click_num == 0) { 
+			this.parent = ref;
+			this.highlightParent(this.parent);
+			this.click_num++;
+		}
+		else if (this.click_num == 1) { 
+			this.child = ref;
+			this.reset();
+		};
+	}
+
+	highlightParent() {
+		// console.log(this.parent.current.style);
+		this.parent.current.style.outline = "solid rgb(255, 0, 0) 3px";
+		// console.log(this.parent.setState({ highlighted: true }));
+	}
+
+	setChild(child_ref) {
+		this.child = child_ref;
 	}
 
 	render() {
@@ -162,34 +208,46 @@ class Chemical extends React.Component {
     constructor (props) {
 		super(props);
 		this.setSelectedElement = props.setSelectedElement;
-		// this.connection_mode = props.connectionMode;
+		this.componentConnector = props.componentConnector;
+		
 		this.state = {
-			connnection_mode: props.connectionMode,
 			highlighted: false
 		}
     }
 
 	handleIconClick(ref) {
-		console.log(this.state.connection_mode);
-		if (this.state.connection_mode) {
-			this.setState({ highlighted: true });
+		if (this.props.connectionMode) {
+			console.log(this.componentConnector.click_num)
+
+			if (this.componentConnector.isParentClick()) {
+				this.componentConnector.handleClick(ref);
+				this.setState({ highlighted: true });
+			}
+			
+			// console.log(this.componentConnector.parent);
 			this.setSelectedElement(ref);
 		}
 	}
 
 	render() {
 		const ChemicalIcon = () => {
-			const ref = useRef(null); 
+			const wrapperRef = useRef(null); 
+
 			return (
-				<CircleIcon 
-					onClick={ () => (this.handleIconClick(ref)) }
+				<Box
 					sx={{ 
 						outline: (this.state.highlighted ? "solid rgb(255, 0, 0) 2px": ""), 
-						fontSize: 50,
+						display: "flex",
+						borderRadius: "50px",
 					}}
-					ref={ ref }
-				/>
-			)
+				>
+					<CircleIcon 
+						onClick={ () => (this.handleIconClick(wrapperRef)) }
+						ref={ wrapperRef }
+						sx={{ fontSize: 50 }}
+					/>
+				</Box>
+			);
 		}
 
 		return (
@@ -327,10 +385,58 @@ function InputBox( { setVisible, type }) {
 	};
 }
 
-
 //////////////
 // FUNCTIONS
 //////////////
+
+const Arrow = ({ startRef, endRef }) => {
+	const [arrow, setArrow] = useState({ x1: 0, y1: 0, x2: 0, y2: 0 });
+	const svgRef = useRef(null);
+  
+	const updateArrow = useCallback(() => {
+		if (startRef.current && endRef.current && svgRef.current) {
+			const start = startRef.current.getBoundingClientRect();
+			const end = endRef.current.getBoundingClientRect();
+			const svg = svgRef.current.getBoundingClientRect();
+
+			setArrow({
+			x1: start.left + start.width / 2 - svg.left,
+			y1: start.top + start.height / 2 - svg.top,
+			x2: end.left + end.width / 2 - svg.left,
+			y2: end.top + end.height / 2 - svg.top,
+			});
+		}
+	}, [startRef, endRef]);
+
+	useEffect(() => {
+		updateArrow();
+		window.addEventListener('resize', updateArrow);
+		return () => window.removeEventListener('resize', updateArrow)
+	}, [updateArrow]);
+  
+	// const angle = Math.atan2(arrow.y2 - arrow.y1, arrow.x2 - arrow.x1) * 180 / Math.PI;
+  
+	return (
+		<svg ref={svgRef} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none' }}>
+		<defs>
+			<marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+			<polygon points="0 0, 10 3.5, 0 7" fill="black" />
+			</marker>
+		</defs>
+		<line
+			x1={arrow.x1}
+			y1={arrow.y1}
+			x2={arrow.x2}
+			y2={arrow.y2}
+			stroke="black"
+			strokeWidth="2"
+			markerEnd="url(#arrowhead)"
+		/>
+		</svg>
+	);
+  };
+  
+
 
 function addChemical(name_, stereo) {
 	CHEMICALS.push(

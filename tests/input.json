@@ -1,0 +1,24 @@
+{
+	"reactions": [
+		{
+			"name": "heat",
+			"transformation": [1, -1, 1],
+			"reactants": [
+				{
+					"name": "salt",
+					"stereochemistry": [1,-1,1],
+					"upstream": null,
+					"downstream": "heat" 
+				}		
+			],
+			"products": [
+				{
+					"name": "burnt salt",
+					"stereochemistry": [1, -1, 1],
+					"upstream": "heat",
+					"downstream": null
+				}
+			]
+		}
+	]
+}
