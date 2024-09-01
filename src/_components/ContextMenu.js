@@ -11,7 +11,7 @@ export class ContextMenu extends React.Component {
 		this.onClicks = props.onClicks;
 
 		// ContextMenu won't open if the click is one of these elements
-		this.rightClickBlackList = props.rightClickBlackList;
+		this.rightClickBlackList = (props.rightClickBlackList ? props.rightClickBlackList: []);
 
 		this.state = {
 			xPos: "0px",
@@ -37,22 +37,35 @@ export class ContextMenu extends React.Component {
 		}
 	}
 
-	rightClickIsValid = (e) => {
-		this.rightClickBlackList.forEach((blacklist_element) => {
-			if (blacklist_element.contains(e.target)) { return false };
-		})
-		return true;
-	}
-
 	handleContextMenu = (e) => {
-		if (this.rightClickIsValid(e)) {
-			e.preventDefault();
+		e.preventDefault();
 
+		if (this.rightClickIsValid(e) === true) {
 			this.setState({
 				xPos: `${e.pageX}px`,
 				yPos: `${e.pageY}px`,
 				showMenu: true,
 			});
+		} 
+		else {
+			// We want to close our menu if the user
+			// is trying to open a different context menu
+			this.handleClick(e);
+		}
+	}
+
+	rightClickIsValid(e) {
+		console.log(this.rightClickBlackList);
+		const blackListArr = Array.from(this.rightClickBlackList)
+
+		if (blackListArr == []) {
+			return true;
+		}
+		else {
+			for (let i=0; i<blackListArr.length; i++) {
+				if (blackListArr[i].contains(e.target)) { return false };
+			}
+			return true;
 		}
 	}
 

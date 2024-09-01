@@ -1,4 +1,4 @@
-import { React, useRef } from "react";
+import React from "react";
 import Box from '@mui/material/Box';
 import CircleIcon from '@mui/icons-material/Circle';
 import Draggable, {DraggableCore} from "react-draggable";
@@ -13,43 +13,55 @@ export class Node extends React.Component {
 		this.child = props.child;
 		this.ref = props.ref;
 
+		// In case two nodes are given the same name,
+		// we'll still have a unique id for this component.
+		this.id = `${this.name}-${Math.random()}`;
+
 		this.state = {
-			highlighed: true
+			highlighed: true,
+			showContextMenu: false
 		};
 	}
 
-	handleContextMenu() {
-		console.log("test");
-		return (
-			<ContextMenu labels={["Add Parents"]} onClicks={[this.addParent]} />
-		)
-	}
+	// addParent = () => {
+	// 	console.log("addParent");
+	// };
 
-	componentDidMount() {
-		// document.addEventListener("click", this.handleClick);
-		document.addEventListener("contextmenu", this.handleContextMenu);
-	}
+	// handleContextMenu = (e) => {
+	// 	// this.setState({
+	// 	// 	showContextMenu: true
+	// 	// });
+	// 	return true;
+	// }
+
+	// componentDidMount() {
+	// 	// document.addEventListener("click", this.handleClick);
+	// 	document.getElementById(this.id).addEventListener("contextmenu", this.handleContextMenu);
+	// }
 
 	render() {
 		return (
-			<Draggable>
-				<Box ref={ this.ref } id="node">
-					<Box
-						sx={{
-							outline: this.state.highlighed ? "solid rgb(255, 0, 0) 2px": null, 
-							display: "flex",
-							borderRadius: "50px",
-						}}
-					>
-						<CircleIcon
+			<div>
+				<Draggable>
+					<Box id={ this.id } className="node">
+						<Box
 							sx={{
-								fontSize: ((this.type == "chemical") ? 50: 25)
+								outline: this.state.highlighed ? "solid rgb(255, 0, 0) 2px": null, 
+								display: "flex",
+								borderRadius: "50px",
 							}}
-						/>
+						>
+							<CircleIcon
+								sx={{
+									fontSize: ((this.type == "chemical") ? 50: 25)
+								}}
+							/>
+						</Box>
+						<div>{this.name} ({ this.type })</div>
 					</Box>
-					<div>{this.name} ({ this.type })</div>
-				</Box>
-			</Draggable>
+				</Draggable>
+				{ <ContextMenu labels={["Add Parents"]} onClicks={[this.addParent]} /> }
+			</div>
 		);
 	}
 }

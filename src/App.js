@@ -13,18 +13,10 @@ import "./styles.css";
 
 
 export default function App() {
-	let NODES = [<Node name="salt" type="chemical" parent={ null } child={ null }/>]
+	let NODES = [<Node ref={ useRef(null) } name="salt" type="chemical" parent={ null } child={ null }/>]
 
 	const [inputVisible, setInputVisible] = useState(false);
 	const [inputType, setInputType] = useState(null);
-
-	const getNodeRefs = () => {
-		return (
-			NODES.map((node) => (
-				node.ref
-			))
-		);
-	};
 
 	const handleChemicalClick = () => {
 		setInputType("chemical");
@@ -127,7 +119,7 @@ export default function App() {
 			))}
 			
 			{ inputVisible && <InputBox type={ inputType } setVisible={ setInputVisible } /> }
-			{ !inputVisible && <ContextMenu labels={ ["Add Chemical", "Add Reaction"] } onClicks={ [handleChemicalClick, handleReactionClick] } /> }
+			{ !inputVisible && <ContextMenu labels={ ["Add Chemical", "Add Reaction"] } onClicks={ [handleChemicalClick, handleReactionClick] } rightClickBlackList={ document.getElementsByClassName("node") } /> }
 
 		</div>
 	);
