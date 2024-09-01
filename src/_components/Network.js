@@ -1,35 +1,48 @@
-import React from "react";
+import React, { useImperativeHandle } from "react";
+import { useState, forwardRef } from "react";
 
-export class Network {
-	constructor(nodes, setNodes) {
-		this.nodes = nodes;
-		this.setNodes = setNodes;
-	}
+export const Network = forwardRef((props, ref) => {
+	useImperativeHandle(ref, () => ({
+		addNode: (newNode) => {
+			props.setNodes(prevNodes => {
+				const updatedNodes = [...prevNodes, newNode];
+				return updatedNodes;
+			});
+		},
 
-	addNode(newNode) {
-		this.setNodes(prevNodes => [...prevNodes, newNode]);
-	}
+		nodeRequestingParent: (node) => {
+			const getNodeHTML = (node) => {
+				return document.getElementById(node.id);
+			}
+	
+			const handleMouseDown = (e) => {
+				console.log(this);
+				for (let i=0; i<this.state.nodes.length; i++) {
+					let node = this.state.nodes[i];
+					console.log(node);
+					let nodeHTML = getNodeHTML(node);
+	
+					if (nodeHTML.contains(e.target)) {
+						console.log(node.name);
+						return;
+					}
+				}
+			}
 
-	nodeRequestingParent(node) {
-		console.log("requesting parent");
-		console.log(node);
-		document.addEventListener("click", (e) => {
-			console.log(e.target)
-		})
-		return;
-	}
+			document.addEventListener("mousedown", handleMouseDown);
 
-	nodeRequestingChild(node, clickEvent) {
-		return;
-	}
+			// Cleanup function
+			return () => {
+				document.removeEventListener("mousedown", handleMouseDown);
+			}
+		}
+	}))
 
-	render() {
-		return (
-			<div>
-				{this.nodes.map((node) => (
-					node
-				))}
-			</div>
-		);
-	}
-}
+	return (
+		<div>
+			{props.nodes.map((node) => 
+				React.cloneElement(node, { key: node.id })
+			)}
+		</div>
+	);
+});
