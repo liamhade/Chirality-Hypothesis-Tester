@@ -55,7 +55,6 @@ export class ContextMenu extends React.Component {
 	}
 
 	rightClickIsValid(e) {
-		console.log(this.rightClickBlackList);
 		const blackListArr = Array.from(this.rightClickBlackList)
 
 		if (blackListArr == []) {

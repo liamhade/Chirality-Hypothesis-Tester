@@ -1,7 +1,7 @@
 import React from "react";
 import Box from '@mui/material/Box';
 import CircleIcon from '@mui/icons-material/Circle';
-import Draggable, {DraggableCore} from "react-draggable";
+import Draggable from "react-draggable";
 import { ContextMenu } from "./ContextMenu";
 
 export class Node extends React.Component {
@@ -11,7 +11,7 @@ export class Node extends React.Component {
 		this.type = props.type;
 		this.parent = props.parent;
 		this.child = props.child;
-		this.ref = props.ref;
+		this.network = props.network;
 
 		// In case two nodes are given the same name,
 		// we'll still have a unique id for this component.
@@ -23,21 +23,17 @@ export class Node extends React.Component {
 		};
 	}
 
-	// addParent = () => {
-	// 	console.log("addParent");
-	// };
+	addParent = () => {
+		console.log("addParent");
 
-	// handleContextMenu = (e) => {
-	// 	// this.setState({
-	// 	// 	showContextMenu: true
-	// 	// });
-	// 	return true;
-	// }
+		// Listen for what the user clicks next
+		document.addEventListener("click", (e) => { this.network.nodeRequestingParent(this, e) })
+	};
 
-	// componentDidMount() {
-	// 	// document.addEventListener("click", this.handleClick);
-	// 	document.getElementById(this.id).addEventListener("contextmenu", this.handleContextMenu);
-	// }
+	addChild = () => {
+		console.log("addChild");
+	}
+
 
 	render() {
 		return (
@@ -60,7 +56,7 @@ export class Node extends React.Component {
 						<div>{this.name} ({ this.type })</div>
 					</Box>
 				</Draggable>
-				{ <ContextMenu labels={["Add Parents"]} onClicks={[this.addParent]} /> }
+				{ <ContextMenu labels={["Add Parent", "Add Child"]} onClicks={[this.addParent, this.addChild]} /> }
 			</div>
 		);
 	}
