@@ -10,8 +10,12 @@ export class Network {
 		this.setNodes(prevNodes => [...prevNodes, newNode]);
 	}
 
-	nodeRequestingParent(node, clickEvent) {
-		console.log("reuesting parent");
+	nodeRequestingParent(node) {
+		console.log("requesting parent");
+		console.log(node);
+		document.addEventListener("click", (e) => {
+			console.log(e.target)
+		})
 		return;
 	}
 

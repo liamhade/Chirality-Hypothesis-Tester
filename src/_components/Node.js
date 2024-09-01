@@ -11,6 +11,8 @@ export class Node extends React.Component {
 		this.type = props.type;
 		this.parent = props.parent;
 		this.child = props.child;
+
+		if (!props.network) {throw Error("Node(): Must add each node to a network!")}
 		this.network = props.network;
 
 		// In case two nodes are given the same name,
@@ -27,7 +29,7 @@ export class Node extends React.Component {
 		console.log("addParent");
 
 		// Listen for what the user clicks next
-		document.addEventListener("click", (e) => { this.network.nodeRequestingParent(this, e) })
+		this.network.nodeRequestingParent(this);
 	};
 
 	addChild = () => {

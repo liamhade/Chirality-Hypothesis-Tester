@@ -6,11 +6,9 @@ import { ContextMenu } from "./_components/ContextMenu";
 import { Network } from "./_components/Network";
 import { Node } from "./_components/Node";
 import "./styles.css";
-import { NetworkCheckRounded } from "@mui/icons-material";
-
 
 export default function App() {
-	const [nodes, setNodes] = useState();
+	const [nodes, setNodes] = useState([]);
 	const network = new Network(nodes, setNodes);
 	const [inputVisible, setInputVisible] = useState(false);
 	const [inputType, setInputType] = useState(null);
@@ -26,8 +24,8 @@ export default function App() {
 	};
 
 	useEffect(() => {
-		network.addNode(<Node name="salt" type="chemical" parent={ null } child={ null }/>);
-	})
+		network.addNode(<Node network={ network } name="salt" type="chemical" parent={ null } child={ null }/>);
+	}, []);
 
 	return (
 		<div>
