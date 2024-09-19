@@ -4,12 +4,12 @@ import { useState, useRef } from "react";
 import { InputBox } from "./_components/InputBox";
 import { ContextMenu } from "./_components/ContextMenu";
 import { Network } from "./_components/Network";
+import { SimulateButton } from "./_components/SimulateButton";
 // import { Node } from "./_components/Node";
 import "./styles.css";
 
 export default function App() {
-	const [nodes, setNodes] = useState([]);
-	const networkRef = useRef();
+	const networkRef = useRef(null);
 	const [inputVisible, setInputVisible] = useState(false);
 	const [inputType, setInputType] = useState(null);
 
@@ -27,7 +27,7 @@ export default function App() {
 
 	return (
 		<div id="main">
-			<Network ref={ networkRef } nodes={ nodes } setNodes={ setNodes } />
+			<Network ref={ networkRef } />
 			{ inputVisible ? (
 				<InputBox type={ inputType } setVisible={ setInputVisible } networkRef={ networkRef } />
 			) : (
@@ -37,7 +37,7 @@ export default function App() {
 					rightClickBlackList={ document.getElementsByClassName("node") } 
 				/> 
 			)}
-			
+			<SimulateButton network={ networkRef } />
 		</div>
 	);
 }

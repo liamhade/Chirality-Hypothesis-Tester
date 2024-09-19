@@ -1,5 +1,5 @@
 import { useRef, useEffect, createRef } from "react";
-import { Node } from "./Node";
+import { Node } from "./Network";
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -30,7 +30,8 @@ export function InputBox( { networkRef, setVisible, type }) {
 			const name_ = document.getElementById("input-chemical-name").value;
 			// const stereo = document.getElementById("input-chemical-stereo").value;
 
-			const newNode = <Node ref={ createRef() } network={ networkRef } name={ name_ } type="chemical" parent={ null } child={ null }/>;
+			const newNode = new Node(name_, "chemical", null);
+			console.log(networkRef);
 			networkRef.current.addNode(newNode);
 			setVisible(false);
 		}
