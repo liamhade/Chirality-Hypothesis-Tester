@@ -78,7 +78,7 @@ export class ContextMenu extends React.Component {
 					<MenuList dense>
 						{this.labels.map((label, index) => (
 							<MenuItem>
-								<ListItemText onClick={ this.onClicks[index] }> { label } </ListItemText>
+								<ListItemText key={ `${label}-${index}` } onClick={ this.onClicks[index] }> { label } </ListItemText>
 							</MenuItem>
 						))}
 					</MenuList>

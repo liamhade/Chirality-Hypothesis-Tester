@@ -1,5 +1,6 @@
 import React, { useImperativeHandle } from "react";
-import { useState, forwardRef } from "react";
+import Xarrow from "react-xarrows";
+import { forwardRef } from "react";
 
 export const Network = forwardRef((props, ref) => {
 	useImperativeHandle(ref, () => ({
@@ -10,33 +11,49 @@ export const Network = forwardRef((props, ref) => {
 			});
 		},
 
-		nodeRequestingParent: (node) => {
-			const getNodeHTML = (node) => {
-				return document.getElementById(node.id);
-			}
+		nodeRequestingParent: (childNode) => {
 	
 			const handleMouseDown = (e) => {
-				console.log(this);
-				for (let i=0; i<this.state.nodes.length; i++) {
-					let node = this.state.nodes[i];
-					console.log(node);
-					let nodeHTML = getNodeHTML(node);
-	
-					if (nodeHTML.contains(e.target)) {
-						console.log(node.name);
-						return;
+				console.log("mouse down!")
+				for (let i=0; i<props.nodes.length; i++) {
+					const node = props.nodes[i].ref.current;
+					if (node.wasClickedOn(e)) {
+						console.log("child node");
+						console.log(childNode);
+						console.log("node");
+						console.log(node);
+
+						childNode.setParent(node);
+						childNode.parentWasAdded();
+						node.setChild(childNode);
+
+						document.removeEventListener("mousedown", handleMouseDown);
+						console.log("removingEventListener");
+						
+						return node;
 					}
 				}
 			}
 
 			document.addEventListener("mousedown", handleMouseDown);
-
-			// Cleanup function
-			return () => {
-				document.removeEventListener("mousedown", handleMouseDown);
-			}
 		}
 	}))
+
+	const renderArrows = () => (
+		props.nodes.map((node) => {
+			console.log(node);
+			return node.render();
+			// if (node.state.child != null) {
+			// 	return (
+			// 		<Xarrow>
+			// 			start={node.id}
+			// 			end={node.state.child.id}
+			// 		</Xarrow>
+			// 	)
+			// }
+		})
+	)
+
 
 	return (
 		<div>

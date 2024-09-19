@@ -1,4 +1,4 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, createRef } from "react";
 import { Node } from "./Node";
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -25,19 +25,24 @@ export function InputBox( { networkRef, setVisible, type }) {
 	};
 	}, [wrapperRef, setVisible]);
 
-	if (type == "chemical") {
+	if (type === "chemical") {
 		const handleSubmit = () => {
 			const name_ = document.getElementById("input-chemical-name").value;
-			const stereo = document.getElementById("input-chemical-stereo").value;
+			// const stereo = document.getElementById("input-chemical-stereo").value;
 
-			const newNode = <Node network={ networkRef } name={ name_ } type="chemical" parent={ null } child={ null }/>;
+			const newNode = <Node ref={ createRef() } network={ networkRef } name={ name_ } type="chemical" parent={ null } child={ null }/>;
 			networkRef.current.addNode(newNode);
-			console.log(networkRef.current);
 			setVisible(false);
 		}
 
 		return (
-			<Box className="input-backdrop">
+			<Box 
+			 className="input-backdrop"
+			 sx={{
+				width: window.innerWidth,
+				height: window.innerHeight,
+			 }}
+			>
 				<Box ref={ wrapperRef }  className="input-main-box">
 					<Box className="input-title">
 						<Typography sx={{ fontSize: 20 }}>Chemical</Typography>
@@ -56,10 +61,10 @@ export function InputBox( { networkRef, setVisible, type }) {
 				</Box>
 			</Box>
 		);
-	} else if (type == "reaction") {
+	} else if (type === "reaction") {
 		const handleSubmit = () => {
-			const name_ = document.getElementById("input-reaction-name").value;
-			const tf = document.getElementById("input-reaction-transformation").value;
+			// const name_ = document.getElementById("input-reaction-name").value;
+			// const tf = document.getElementById("input-reaction-transformation").value;
 
 			// addReaction(name_, tf);
 			setVisible(false);
@@ -86,6 +91,6 @@ export function InputBox( { networkRef, setVisible, type }) {
 			</Box>
 		);	
 	} else {
-		throw new Error(`(inputBox): type prop of \"${type}\" is invalid`);
+		throw new Error(`(inputBox): type prop of "${type}" is invalid`);
 	};
 }

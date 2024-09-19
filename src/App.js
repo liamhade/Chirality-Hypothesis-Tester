@@ -4,7 +4,7 @@ import { useState, useRef } from "react";
 import { InputBox } from "./_components/InputBox";
 import { ContextMenu } from "./_components/ContextMenu";
 import { Network } from "./_components/Network";
-import { Node } from "./_components/Node";
+// import { Node } from "./_components/Node";
 import "./styles.css";
 
 export default function App() {
@@ -23,12 +23,21 @@ export default function App() {
 		setInputVisible(true);
 	};
 
-	return (
-		<div>
-			<Network ref={ networkRef } nodes={ nodes } setNodes={ setNodes } />
-			{ inputVisible && <InputBox type={ inputType } setVisible={ setInputVisible } networkRef={ networkRef } /> }
-			{ !inputVisible && <ContextMenu labels={ ["Add Chemical", "Add Reaction"] } onClicks={ [handleChemicalClick, handleReactionClick] } rightClickBlackList={ document.getElementsByClassName("node") } /> }
+	// document.addEventListener("click", () => {console.log(networkRef)});
 
+	return (
+		<div id="main">
+			<Network ref={ networkRef } nodes={ nodes } setNodes={ setNodes } />
+			{ inputVisible ? (
+				<InputBox type={ inputType } setVisible={ setInputVisible } networkRef={ networkRef } />
+			) : (
+				<ContextMenu 
+					labels={ ["Add Chemical", "Add Reaction"] } 
+					onClicks={ [handleChemicalClick, handleReactionClick] } 
+					rightClickBlackList={ document.getElementsByClassName("node") } 
+				/> 
+			)}
+			
 		</div>
 	);
 }

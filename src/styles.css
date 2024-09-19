@@ -4,47 +4,43 @@
 }
 
 #root {
+	width: 100vw;
+	height: 100vh;
+};
+
+.input-backdrop {
+	width: 100vw;
+	height: 100vh;
+	backdrop-filter: blur(2px);
+	animation: fadeIn 0.4s;
+}
+
+.input-main-box {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+
+	width: 20vw;
+	height: 40vh;
+	outline: solid black 2px;
+	border-radius: 2px;
+	box-shadow: 2px;
+}
+
+.input-title {
+	margin-top: 3vh;
 	display: flex;
 	justify-content: center;
 	align-items: center;
+}
 
-	width: 99vw;
-	height: 95vh;
+.input-inner-box {
+	margin-top: 2vh;
+	margin-left: 1vw;
+	padding: 1vh;
+}
 
-	.input-backdrop {
-		width: 100vw;
-		height: 100vh;
-		backdrop-filter: blur(2px);
-		animation: fadeIn 0.4s;
-
-		.input-main-box {
-			position: absolute;
-			left: 50%;
-			top: 50%;
-			transform: translate(-50%, -65%);
-
-			width: 20vw;
-			height: 40vh;
-			outline: solid black 2px;
-			border-radius: 2px;
-			box-shadow: 2px;
-
-			.input-title {
-				margin-top: 3vh;
-				display: flex;
-				justify-content: center;
-				align-items: center;
-			}
-
-			.input-inner-box {
-				margin-top: 2vh;
-				margin-left: 1vw;
-				padding: 1vh;
-
-				#inputButton {
-					margin-top: 1vh;
-				}
-			}
-		}
-	}
-};
+#inputButton {
+	margin-top: 1vh;
+}
