@@ -1,7 +1,8 @@
 import * as React from "react";
-import { useState, useRef } from "react";
+import { useState } from "react";
 // import { Arrow } from "./_components/Arrows";
 import { InputBox } from "./_components/InputBox";
+import { Node } from "./_components/Network";
 import { ContextMenu } from "./_components/ContextMenu";
 import { Network } from "./_components/Network";
 import { SimulateButton } from "./_components/SimulateButton";
@@ -9,9 +10,13 @@ import { SimulateButton } from "./_components/SimulateButton";
 import "./styles.css";
 
 export default function App() {
-	const networkRef = useRef(null);
-	const [inputVisible, setInputVisible] = useState(false);
-	const [inputType, setInputType] = useState(null);
+	const [ nodes, setNodes ] = useState([
+		new Node('a', 'chemical', null),
+		new Node('b', 'chemical', null)
+	]);
+
+	const [ inputVisible, setInputVisible ] = useState(false);
+	const [ inputType, setInputType ] = useState(null);
 
 	const handleChemicalClick = () => {
 		setInputType("chemical");
@@ -23,13 +28,11 @@ export default function App() {
 		setInputVisible(true);
 	};
 
-	// document.addEventListener("click", () => {console.log(networkRef)});
-
 	return (
 		<div id="main">
-			<Network ref={ networkRef } />
+			<Network nodes={ nodes } setNodes={ setNodes }/>
 			{ inputVisible ? (
-				<InputBox type={ inputType } setVisible={ setInputVisible } networkRef={ networkRef } />
+				<InputBox type={ inputType } setVisible={ setInputVisible } setNodes={ setNodes } />
 			) : (
 				<ContextMenu 
 					labels={ ["Add Chemical", "Add Reaction"] } 
@@ -37,7 +40,7 @@ export default function App() {
 					rightClickBlackList={ document.getElementsByClassName("node") } 
 				/> 
 			)}
-			<SimulateButton network={ networkRef } />
+			<SimulateButton nodes={ nodes } />
 		</div>
 	);
 }

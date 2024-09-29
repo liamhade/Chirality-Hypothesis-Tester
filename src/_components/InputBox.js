@@ -5,7 +5,7 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import { Typography } from "@mui/material";
 
-export function InputBox( { networkRef, setVisible, type }) {
+export function InputBox( { networkRef, setVisible, setNodes, type }) {
 	// Remove component if we click outside the input box
 	const wrapperRef = useRef(null);
 
@@ -31,8 +31,7 @@ export function InputBox( { networkRef, setVisible, type }) {
 			// const stereo = document.getElementById("input-chemical-stereo").value;
 
 			const newNode = new Node(name_, "chemical", null);
-			console.log(networkRef);
-			networkRef.current.addNode(newNode);
+			setNodes(prevNodes => [...prevNodes, newNode]);
 			setVisible(false);
 		}
 

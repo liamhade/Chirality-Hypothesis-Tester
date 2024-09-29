@@ -9,6 +9,7 @@ export class ContextMenu extends React.Component {
 		super(props);
 		this.labels   = props.labels;
 		this.onClicks = props.onClicks;
+		this.name = props.name;
 
 		// ContextMenu won't open if the click is one of these elements
 		this.rightClickBlackList = (props.rightClickBlackList ? props.rightClickBlackList: []);

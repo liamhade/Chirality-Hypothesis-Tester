@@ -1,10 +1,10 @@
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 
-export function SimulateButton({ network }) {
+export function SimulateButton({ nodes }) {
 	const handleClick = () => {
-		console.log("heres the network:");
-		console.log(network);
+		console.log("heres the nodes:");
+		console.log(nodes);
 	}
 
 	return (
