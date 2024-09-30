@@ -1,11 +1,6 @@
-ID	Name	Type	Chiral/achiral (compounds only)	# of chiral centers (points only)	Stereoisomers (compounds only)	Transformations (compounds only)	Products (reactions only)
-1	glycoaldehyde	compound	A	0	1	10	
-2	cyanamide	compound	A	0	1	10	
-3	2-aminooxazole	compound	A	0	1		
-4	pentose	compound	C	1	2		
-5	RAO	compound	C	4	16		
-6	cyanoacetylene	compound	A	0	1		
-7	phosphate	compound	A	0	1		
-8	anhydroarabinonucleoside	compound	C	4	16		
-9	2,3-cyclophosphate nucleotide	compound	C	4	16		
-10	aldol-condensation	reaction					3
+ID	Name	Type	Stereochemistry (compounds only)	Transformation (reactions only)	Child
+1	glycoaldehyde	compound	[-1, -1, 1]		aldol-condensation
+3	cyanamide	compound	[-1, 1, 1]		glyceraldehyde
+10	aldol-condensation	reaction		[1, -1, 1]	cyanamide
+12	glyceraldehyde	reaction		[1, 1, 1]	2-aminooxazole
+4	2-aminooxazole	compound	[-1, 1, -1]
