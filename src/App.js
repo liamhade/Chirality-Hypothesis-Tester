@@ -37,6 +37,7 @@ export default function App() {
 				<ContextMenu 
 					labels={ ["Add Chemical", "Add Reaction"] } 
 					onClicks={ [handleChemicalClick, handleReactionClick] } 
+					listeningElement={ document }
 					rightClickBlackList={ document.getElementsByClassName("node") } 
 				/> 
 			)}

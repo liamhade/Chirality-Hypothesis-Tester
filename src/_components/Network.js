@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState, createRef } from "react";
 import Xarrow, { useXarrow, Xwrapper } from "react-xarrows";
 import { forwardRef } from "react";
 import Box from '@mui/material/Box';
 import CircleIcon from '@mui/icons-material/Circle';
 import Draggable from "react-draggable";
 import { ContextMenu } from "./ContextMenu";
+import { NodeContextMenu } from "./NodeContextMenu";
 
 const boxStyle = {border: 'grey solid 2px', borderRadius: '10px', padding: '5px'};
 
@@ -23,6 +24,7 @@ function nodeFromId(node_array, id) {
 
 const DraggableNode = ({ node, allNodes, updateXarrow }) => {
 	const nodeSize = (node.type === 'chemical' ? 50 : 25);
+	const nodeRef = createRef();
     const [, forceUpdate] = useState();
 
 	const addChild = () => {
@@ -51,17 +53,26 @@ const DraggableNode = ({ node, allNodes, updateXarrow }) => {
 		document.addEventListener("mousedown", handleMouseDown);
 	}
 
+	// const handleRightClick = (e) => {
+	// 	console.log(`${node.id} was right clicked`);
+
+	// } 
+
+	// useEffect(() => {
+	// 	nodeRef.current.addEventListener('contextmenu', handleRightClick);
+	// }, [])
+
 	return (
 		<div>
 			<Draggable onDrag={updateXarrow} onStop={updateXarrow}>
-				<Box onClick={() => console.log(`${node.id} was clicked`)} id={node.id} className="node" sx={{ width: `${nodeSize}px`, ...boxStyle }}>
+				<Box ref={ nodeRef } onClick={() => console.log(`${node.id} was clicked`)} id={node.id} className="node" sx={{ width: `${nodeSize}px`, ...boxStyle }}>
 					<Box sx={{ borderRadius: "50px" }}>
 						<CircleIcon sx={{ fontSize: nodeSize }} />
 					</Box>
 					<div>{node.name_} ({node.type})</div>
 				</Box>
 			</Draggable>
-			<ContextMenu labels={["Add Child"]} onClicks={[addChild]} name={ node.id }/>
+			{document.getElementById(node.id) && <ContextMenu labels={["Add Child"]} onClicks={[addChild]} name={ node.id } listeningElement={ document.getElementById(node.id) }/> }
 		</div>
 	);
 };

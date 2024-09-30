@@ -4,13 +4,13 @@ import MenuList from '@mui/material/MenuList';
 import MenuItem from '@mui/material/MenuItem';
 import ListItemText from '@mui/material/ListItemText';
 
-export class ContextMenu extends React.Component {
+export class NodeContextMenu extends React.Component {
 	constructor(props) {
 		super(props);
 		this.labels   = props.labels;
 		this.onClicks = props.onClicks;
 		this.name = props.name;
-		this.listeningElement = props.listeningElement
+		this.listeningElement = props.listeningElement;
 
 		// ContextMenu won't open if the click is one of these elements
 		this.rightClickBlackList = (props.rightClickBlackList ? props.rightClickBlackList: []);
@@ -25,7 +25,6 @@ export class ContextMenu extends React.Component {
 	componentDidMount() {
 		this.listeningElement.addEventListener("click", this.handleClick);
 		this.listeningElement.addEventListener("contextmenu", this.handleContextMenu);
-		
 	}
 
 	componentWillUnmount() {
