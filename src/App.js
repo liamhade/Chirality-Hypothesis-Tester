@@ -11,8 +11,8 @@ import "./styles.css";
 
 export default function App() {
 	const [ nodes, setNodes ] = useState([
-		new Node('a', 'chemical', null),
-		new Node('b', 'chemical', null)
+		// new Node('a', 'chemical', null),
+		// new Node('b', 'chemical', null)
 	]);
 
 	const [ inputVisible, setInputVisible ] = useState(false);
@@ -38,6 +38,7 @@ export default function App() {
 					labels={ ["Add Chemical", "Add Reaction"] } 
 					onClicks={ [handleChemicalClick, handleReactionClick] } 
 					rightClickBlackList={ document.getElementsByClassName("node") } 
+					listeningElement={ document }
 				/> 
 			)}
 			<SimulateButton nodes={ nodes } />

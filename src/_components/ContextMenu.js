@@ -10,6 +10,10 @@ export class ContextMenu extends React.Component {
 		this.labels   = props.labels;
 		this.onClicks = props.onClicks;
 		this.name = props.name;
+		this.listeningElement = props.listeningElement;
+
+		console.log('listeningElement');
+		console.log(props.listeningElement);
 
 		// ContextMenu won't open if the click is one of these elements
 		this.rightClickBlackList = (props.rightClickBlackList ? props.rightClickBlackList: []);
@@ -22,13 +26,13 @@ export class ContextMenu extends React.Component {
 	}
 
 	componentDidMount() {
-		document.addEventListener("click", this.handleClick);
-		document.addEventListener("contextmenu", this.handleContextMenu);
+		this.listeningElement.addEventListener("click", this.handleClick);
+		this.listeningElement.addEventListener("contextmenu", this.handleContextMenu);
 	}
 
 	componentWillUnmount() {
-		document.removeEventListener("click", this.handleClick);
-		document.removeEventListener("contextmenu", this.handleContextMenu);
+		this.listeningElement.removeEventListener("click", this.handleClick);
+		this.listeningElement.removeEventListener("contextmenu", this.handleContextMenu);
 	}
 
 	handleClick = (e) => {
@@ -79,7 +83,15 @@ export class ContextMenu extends React.Component {
 					<MenuList dense>
 						{this.labels.map((label, index) => (
 							<MenuItem>
-								<ListItemText key={ `${label}-${index}` } onClick={ this.onClicks[index] }> { label } </ListItemText>
+								<ListItemText 
+									key={ `${label}-${index}` } 
+									onClick={(e) => {
+										this.onClicks[index]();
+										this.handleClick(e);
+									}}
+								> 
+									{ label } 
+								</ListItemText>
 							</MenuItem>
 						))}
 					</MenuList>
